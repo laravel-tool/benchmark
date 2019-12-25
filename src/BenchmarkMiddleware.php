@@ -6,6 +6,7 @@ namespace LaravelTool\Benchmark;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Symfony\Component\HttpFoundation\Response;
 
 class BenchmarkMiddleware
@@ -26,12 +27,22 @@ class BenchmarkMiddleware
 
     public function terminate(Request $request, Response $response)
     {
-        $route = $request->route();
+        $router = $request->route();
+
         $routeName = null;
-        if (isset($route[1][0]) && $route[1][0] instanceof Closure) {
-            $routeName = 'closure';
+        if ($router instanceof Route) {
+            $action = $router->getAction();
+            if ($action['uses'] instanceof Closure) {
+                $routeName = 'closure';
+            } else {
+                $routeName = $action['uses'];
+            }
         } else {
-            $routeName = $route[1]['uses'];
+            if (isset($router[1][0]) && $router[1][0] instanceof Closure) {
+                $routeName = 'closure';
+            } else {
+                $routeName = $router[1]['uses'];
+            }
         }
 
         $this->benchmark->finish($routeName);
