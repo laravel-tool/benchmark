@@ -61,4 +61,15 @@ class BenchmarkService
 
         return $result;
     }
+
+    public function clear(){
+        $keys = Redis::sMembers($this->options['redis_prefix'].':list');
+        $dataKeys = [];
+        foreach ($keys as $key) {
+            $dataKeys[] = $this->options['redis_prefix'].':cnt:'.$key;
+            $dataKeys[] = $this->options['redis_prefix'].':time:'.$key;
+        }
+        Redis::del($dataKeys);
+        Redis::del($this->options['redis_prefix'].':list');
+    }
 }
