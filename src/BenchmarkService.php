@@ -18,12 +18,12 @@ class BenchmarkService
         $this->options = $options;
     }
 
-    public function start()
+    public function start(): void
     {
         $this->startTime = microtime(true);
     }
 
-    public function finish($routeName)
+    public function finish(string $routeName): void
     {
         if (empty($routeName)) {
             return;
@@ -36,13 +36,17 @@ class BenchmarkService
         Redis::incrByFloat($this->options['redis_prefix'].':time:'.$routeName, $executionTime);
     }
 
-    public function index($sort = 'avg', $desc = false)
+    public function index(string $sort = 'avg', bool $desc = false): array
     {
         $keys = Redis::sMembers($this->options['redis_prefix'].':list');
         $dataKeys = [];
         foreach ($keys as $key) {
             $dataKeys[] = $this->options['redis_prefix'].':cnt:'.$key;
             $dataKeys[] = $this->options['redis_prefix'].':time:'.$key;
+        }
+
+        if (empty($dataKeys)) {
+            return [];
         }
 
         $result = [];
@@ -66,7 +70,7 @@ class BenchmarkService
         return $result;
     }
 
-    public function clear()
+    public function clear(): void
     {
         $keys = Redis::sMembers($this->options['redis_prefix'].':list');
         $dataKeys = [];
@@ -74,7 +78,11 @@ class BenchmarkService
             $dataKeys[] = $this->options['redis_prefix'].':cnt:'.$key;
             $dataKeys[] = $this->options['redis_prefix'].':time:'.$key;
         }
-        Redis::del($dataKeys);
+
+        if (!empty($dataKeys)) {
+            Redis::del($dataKeys);
+        }
+
         Redis::del($this->options['redis_prefix'].':list');
     }
 }
