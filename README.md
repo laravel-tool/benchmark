@@ -1,7 +1,7 @@
 # Laravel Tool Benchmark
+Collecting action execution times in Lumen/Laravel
 
 ## Installation
-
 ### Composer
 ```bash
 composer require laravel-tool/benchmark
@@ -21,8 +21,12 @@ $app->withFacades(true, [
 ];
 ```
 
-## Get info
-
+## Usage
+### Get list
 ```php
-Benchmark::index()
+Benchmark::index();
+```
+### Clear data
+```php
+Benchmark::clear();
 ```
