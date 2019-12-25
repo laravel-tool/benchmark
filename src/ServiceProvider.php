@@ -4,10 +4,10 @@
 namespace LaravelTool\Benchmark;
 
 
+use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Illuminate\Support\Str;
-use Illuminate\Foundation\AliasLoader;
-use Illuminate\Foundation\Http\Kernel;
 
 class ServiceProvider extends BaseServiceProvider
 {
