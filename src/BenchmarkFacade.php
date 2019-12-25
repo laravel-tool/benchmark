@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * Class BenchmarkFacade
- * @method array index($sort)
- * @method void clear()
+ * @method static \LaravelTool\Benchmark\BenchmarkService index($sort = 'avg', $desc = false)
+ * @method static \LaravelTool\Benchmark\BenchmarkService clear()
  * @package LaravelTool\Benchmark
  */
 class BenchmarkFacade extends Facade

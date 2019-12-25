@@ -25,7 +25,7 @@ class BenchmarkService
 
     public function finish($routeName)
     {
-        if (empty($routeName)){
+        if (empty($routeName)) {
             return;
         }
 
@@ -36,7 +36,7 @@ class BenchmarkService
         Redis::incrByFloat($this->options['redis_prefix'].':time:'.$routeName, $executionTime);
     }
 
-    public function index()
+    public function index($sort = 'avg', $desc = false)
     {
         $keys = Redis::sMembers($this->options['redis_prefix'].':list');
         $dataKeys = [];
@@ -57,16 +57,17 @@ class BenchmarkService
                 ];
             }
 
-
-            uasort($result, function ($a, $b) {
-                return ($a['avg'] <=> $b['avg']) * -1;
+            uasort($result, function ($a, $b) use ($sort, $desc) {
+                return ($a[$sort] <=> $b[$sort]) * ($desc ? 1 : -1);
             });
+
         }
 
         return $result;
     }
 
-    public function clear(){
+    public function clear()
+    {
         $keys = Redis::sMembers($this->options['redis_prefix'].':list');
         $dataKeys = [];
         foreach ($keys as $key) {
