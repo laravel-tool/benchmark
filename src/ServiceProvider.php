@@ -7,6 +7,7 @@ namespace LaravelTool\Benchmark;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Foundation\Http\Kernel;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -50,7 +51,7 @@ class ServiceProvider extends BaseServiceProvider
             $kernel = $this->app->make(Kernel::class);
 
             // When the HandleCors middleware is not attached globally, add the PreflightCheck
-            if (!$kernel->hasMiddleware(HandleCors::class)) {
+            if (!$kernel->hasMiddleware(BenchmarkMiddleware::class)) {
                 $kernel->prependMiddleware(BenchmarkMiddleware::class);
             }
         }
