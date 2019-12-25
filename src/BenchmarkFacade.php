@@ -6,6 +6,12 @@ namespace LaravelTool\Benchmark;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * Class BenchmarkFacade
+ * @method array index($sort)
+ * @method void clear()
+ * @package LaravelTool\Benchmark
+ */
 class BenchmarkFacade extends Facade
 {
     /**

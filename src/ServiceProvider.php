@@ -6,6 +6,7 @@ namespace LaravelTool\Benchmark;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Foundation\AliasLoader;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -26,6 +27,14 @@ class ServiceProvider extends BaseServiceProvider
 
             return new BenchmarkService($options);
         });
+
+        if ($this->isLumen()) {
+            if (!class_exists('Benchmark')) {
+                class_alias(BenchmarkFacade::class, 'Benchmark');
+            }
+        } else {
+            AliasLoader::getInstance()->alias('Benchmark', BenchmarkFacade::class);
+        }
     }
 
 
@@ -41,7 +50,7 @@ class ServiceProvider extends BaseServiceProvider
             $kernel = $this->app->make(Kernel::class);
 
             // When the HandleCors middleware is not attached globally, add the PreflightCheck
-            if (! $kernel->hasMiddleware(HandleCors::class)) {
+            if (!$kernel->hasMiddleware(HandleCors::class)) {
                 $kernel->prependMiddleware(BenchmarkMiddleware::class);
             }
         }
@@ -49,7 +58,7 @@ class ServiceProvider extends BaseServiceProvider
 
     protected function configPath()
     {
-        return __DIR__ . '/../config/benchmark.php';
+        return __DIR__.'/../config/benchmark.php';
     }
 
     protected function isLumen()
