@@ -25,6 +25,10 @@ class BenchmarkService
 
     public function finish($routeName)
     {
+        if (empty($routeName)){
+            return;
+        }
+
         $executionTime = microtime(true) - $this->startTime;
 
         Redis::sAdd($this->options['redis_prefix'].':list', $routeName);
