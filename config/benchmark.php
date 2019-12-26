@@ -1,5 +1,18 @@
 <?php
 
 return [
-    'redis_prefix' => 'benchmark',
+    'redis'      => [
+        'prefix'     => 'benchmark',
+        'connection' => 'default',
+    ],
+
+    'middleware' => [
+        'autoload' => true,
+    ],
+
+    'facade'     => 'Benchmark',
+
+    'events' => [
+
+    ]
 ];

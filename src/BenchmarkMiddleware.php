@@ -5,11 +5,12 @@ namespace LaravelTool\Benchmark;
 
 
 use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\TerminableInterface;
 
-class BenchmarkMiddleware
+class BenchmarkMiddleware implements TerminableInterface
 {
     /** @var BenchmarkService $cors */
     protected $benchmark;
@@ -22,6 +23,7 @@ class BenchmarkMiddleware
     public function handle($request, Closure $next)
     {
         $this->benchmark->start();
+
         return $next($request);
     }
 
@@ -45,6 +47,9 @@ class BenchmarkMiddleware
             }
         }
 
-        $this->benchmark->finish($routeName);
+        $this->benchmark
+            ->setRequest($request)
+            ->setResponse($response)
+            ->finish($routeName);
     }
 }
