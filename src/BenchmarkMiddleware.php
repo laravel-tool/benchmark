@@ -37,19 +37,21 @@ class BenchmarkMiddleware implements TerminableInterface
             if ($action['uses'] instanceof Closure) {
                 $routeName = 'closure';
             } else {
-                $routeName = $action['uses'];
+                $routeName = isset($action['uses']) ? $action['uses'] : null;
             }
         } else {
             if (isset($router[1][0]) && $router[1][0] instanceof Closure) {
                 $routeName = 'closure';
             } else {
-                $routeName = $router[1]['uses'];
+                $routeName = $router[1]['uses'] ? $router[1]['uses'] : null;
             }
         }
 
-        $this->benchmark
-            ->setRequest($request)
-            ->setResponse($response)
-            ->finish($routeName);
+        if (!is_null($routeName)) {
+            $this->benchmark
+                ->setRequest($request)
+                ->setResponse($response)
+                ->finish($routeName);
+        }
     }
 }
