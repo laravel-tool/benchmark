@@ -4,6 +4,8 @@
 namespace LaravelTool\Benchmark;
 
 
+use Illuminate\Contracts\Redis\Connection as Connection;
+use Illuminate\Redis\Connections\Connection as Connections;
 use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,20 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 class BenchmarkService
 {
 
-    /** @var array */
-    protected $config;
-
-    /** @var float */
-    protected $startTime;
-
-    /** @var \Illuminate\Contracts\Redis\Connection|\Illuminate\Redis\Connections\Connection */
-    protected $redis;
-
-    /** @var Request */
-    protected $request;
-
-    /** @var Response */
-    protected $response;
+    protected array $config;
+    protected float $startTime;
+    protected Connection|Connections $redis;
+    protected Request $request;
+    protected Response $response;
 
     public function __construct($config)
     {
@@ -32,14 +25,14 @@ class BenchmarkService
         $this->redis = app('redis')->connection($config['redis']['connection']);
     }
 
-    public function setRequest(Request $request)
+    public function setRequest(Request $request): static
     {
         $this->request = $request;
 
         return $this;
     }
 
-    public function setResponse(Response $response)
+    public function setResponse(Response $response): static
     {
         $this->response = $response;
 
@@ -112,6 +105,38 @@ class BenchmarkService
         }
 
         return $result;
+    }
+
+    public function avg(): float
+    {
+        $time = 0;
+        $cnt = 0;
+        foreach ($this->index() as $v) {
+            $time += $v['time'];
+            $cnt += $v['cnt'];
+        }
+
+        return $time / $cnt;
+    }
+
+    public function min(): float
+    {
+        $min = PHP_INT_MAX;
+        foreach ($this->index() as $v) {
+            $min = min($min, $v['min']);
+        }
+
+        return $min;
+    }
+
+    public function max(): float
+    {
+        $max = PHP_INT_MIN;
+        foreach ($this->index() as $v) {
+            $max = max($max, $v['max']);
+        }
+
+        return $max;
     }
 
     public function clear(): void

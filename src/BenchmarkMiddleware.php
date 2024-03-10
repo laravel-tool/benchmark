@@ -8,26 +8,29 @@ use Closure;
 use Illuminate\Routing\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\TerminableInterface;
 
-class BenchmarkMiddleware implements TerminableInterface
+class BenchmarkMiddleware
 {
-    /** @var BenchmarkService $cors */
-    protected $benchmark;
-
-    public function __construct(BenchmarkService $benchmark)
-    {
-        $this->benchmark = $benchmark;
+    public function __construct(
+        protected BenchmarkService $benchmark
+    ) {
     }
 
     public function handle($request, Closure $next)
     {
-        $this->benchmark->start();
+        if (config('benchmark.enabled')) {
+            $this->benchmark->start();
 
-        return $next($request);
+            $response = $next($request);
+
+            $this->benchmark($request, $response);
+            return $response;
+        } else {
+            return $next($request);
+        }
     }
 
-    public function terminate(Request $request, Response $response)
+    protected function benchmark(Request $request, Response $response): void
     {
         $router = $request->route();
 

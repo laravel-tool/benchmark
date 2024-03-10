@@ -1,16 +1,12 @@
 <?php
 
 return [
-    'redis'      => [
-        'prefix'     => 'benchmark',
+    'enabled' => env('BENCHMARK_ENABLED', true),
+
+    'redis' => [
+        'prefix' => 'benchmark',
         'connection' => 'default',
     ],
-
-    'middleware' => [
-        'autoload' => true,
-    ],
-
-    'facade'     => 'Benchmark',
 
     'events' => [
 

@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Facade;
 /**
  * Class BenchmarkFacade
  * @method static \LaravelTool\Benchmark\BenchmarkService index($sort = 'avg', $desc = false)
+ * @method static \LaravelTool\Benchmark\BenchmarkService avg()
+ * @method static \LaravelTool\Benchmark\BenchmarkService min()
+ * @method static \LaravelTool\Benchmark\BenchmarkService max()
  * @method static \LaravelTool\Benchmark\BenchmarkService clear()
  * @package LaravelTool\Benchmark
  */
